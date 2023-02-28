@@ -1,0 +1,18 @@
+{
+    "UpdateInterval": 600,
+    "PubIPUrls": [
+        "https://ident.me",
+        "https://api.ipify.org"
+    ],
+    "Domains": [
+        {
+            "Domain": "abc.com",
+            "Provider": "tencent",
+            "SecretId": "",
+            "SecretKey": "",
+            "SubDomains": [
+                "test"
+            ]
+        }
+    ]
+}

@@ -1,8 +1,6 @@
 package tencent
 
 import (
-	"log"
-
 	"github.com/ahui2012/go-ddns-client/config"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
@@ -53,10 +51,7 @@ func (t *TencentCloud) UpdateRecord(ip string) error {
 		request.Value = common.StringPtr(ip)
 		request.RecordId = common.Uint64Ptr(*t.Records[name].RecordId)
 		_, err := t.Client.ModifyRecord(request)
-		if err != nil {
-			return err
-		}
-		log.Printf("update %s.%s successfully\n", name, t.Config.Domain)
+		return err
 	}
 
 	return nil

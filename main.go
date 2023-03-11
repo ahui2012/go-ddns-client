@@ -13,6 +13,7 @@ import (
 )
 
 var WorkingPath string
+var CurrentIP string
 
 func init() {
 	exeFilePath, err := os.Executable()
@@ -44,27 +45,50 @@ func main() {
 		log.Fatalln("can load config from config.json:", err)
 		return
 	}
+
 	interval := time.Duration(cfg.UpdateInterval) * time.Second
 
-	ddns.Init(cfg.Domains)
 	for {
-		update(cfg)
+		if initProviders(cfg) == true {
+			break
+		}
+		time.Sleep(interval)
+	}
+
+	for {
+		updateDNS(cfg)
 		time.Sleep(interval)
 	}
 }
 
-func update(cfg *config.AppConfig) {
+func initProviders(cfg *config.AppConfig) (result bool) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("catch a error:", err)
+			result = false
+		}
+	}()
+	ddns.Init(cfg.Domains)
+	return true
+}
+
+func updateDNS(cfg *config.AppConfig) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println("catch a error:", err)
 		}
 	}()
 
-	publicIP := pubip.GetPublicIP(cfg.PubIPUrls)
-	if publicIP == "" {
+	newIP := pubip.GetPublicIP(cfg.PubIPUrls)
+	if newIP == "" {
 		log.Fatalln("can not get public ip")
 		return
 	}
 
-	ddns.Update(publicIP)
+	ddns.Update(newIP)
+
+	if newIP != CurrentIP {
+		CurrentIP = newIP
+		log.Printf("update successfully, new ip is %s\n", newIP)
+	}
 }

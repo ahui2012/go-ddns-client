@@ -12,15 +12,15 @@ type DNSProvider interface {
 	UpdateRecord(ip string) error
 }
 
-var DNSProviders []DNSProvider
+var dnsProviders []DNSProvider
 
 func Init(domains []config.DomainConfig) {
-	DNSProviders = []DNSProvider{}
+	dnsProviders = []DNSProvider{}
 	for _, domain := range domains {
 		if domain.Provider == "tencent" {
 			var provider = &tencent.TencentCloud{Config: domain}
 			provider.Init()
-			DNSProviders = append(DNSProviders, provider)
+			dnsProviders = append(dnsProviders, provider)
 		} else {
 			panic("not support dns service provider: " + domain.Provider)
 		}
@@ -28,7 +28,7 @@ func Init(domains []config.DomainConfig) {
 }
 
 func Update(ip string) {
-	for _, provider := range DNSProviders {
+	for _, provider := range dnsProviders {
 		if err := provider.UpdateRecord(ip); err != nil {
 			log.Println(err)
 		}

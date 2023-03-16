@@ -51,7 +51,9 @@ func (t *TencentCloud) UpdateRecord(ip string) error {
 		request.Value = common.StringPtr(ip)
 		request.RecordId = common.Uint64Ptr(*t.Records[name].RecordId)
 		_, err := t.Client.ModifyRecord(request)
-		return err
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

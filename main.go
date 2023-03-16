@@ -81,7 +81,7 @@ func updateDNS(cfg *config.AppConfig) {
 
 	newIP := pubip.GetPublicIP(cfg.PubIPUrls)
 	if newIP == "" {
-		log.Fatalln("can not get public ip")
+		log.Println("can not get public ip")
 		return
 	}
 
